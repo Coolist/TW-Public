@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" width="18px" height="18px" viewBox="0 0 18 18" enable-background="new 0 0 18 18" xml:space="preserve">
+  <path fill="none" stroke="#333333" stroke-miterlimit="10" d="M7 0.5h6.5c1.105 0 2 0.895 2 2v13c0 1.105-0.895 2-2 2h-9c-1.105 0-2-0.895-2-2V5L7 0.5z"/>
+  <polyline fill="none" stroke="#333333" stroke-miterlimit="10" points="2,4.5 6.5,4.5 6.5,0 "/>
+  <line fill="none" stroke="#333333" stroke-miterlimit="10" x1="13" y1="4.5" x2="8" y2="4.5"/>
+  <line fill="none" stroke="#333333" stroke-miterlimit="10" x1="13" y1="7.5" x2="5" y2="7.5"/>
+  <line fill="none" stroke="#333333" stroke-miterlimit="10" x1="5" y1="10.5" x2="13" y2="10.5"/>
+  <line fill="none" stroke="#333333" stroke-miterlimit="10" x1="5" y1="13.5" x2="13" y2="13.5"/>
+</svg>

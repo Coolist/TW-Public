@@ -1,0 +1,141 @@
+<div class="container logo auto-fixed">
+
+	<img class="logo-mini" src="images/logo-icon.svg" alt="Typewrite" ng-click="goto('/documents')" />
+
+	<div class="logo-menu">
+		<span class="item" ng-click="goto('/documents')">
+			Documents
+		</span>
+		<span class="item" ng-click="goto('/account/settings')">
+			Account
+		</span>
+		<span class="item" ng-click="goto('/account/logout')">
+			Logout
+		</span>
+	</div>
+
+</div>
+
+<a class="menu" ng-hide="documentSettings" ng-class="(preview === true) ? 'hidden' : ''" ng-click="openDocumentSettings()"><img src="images/icon-menu.svg" alt="Menu" /></a>
+<a class="edit" ng-show="preview" ng-click="preview = false"><img src="images/icon-edit.svg" alt="Edit" /></a>
+<div class="menu" ng-show="documentSettings" click-away="closeDocumentSettings()">
+	<span class="item" ng-click="closeDocumentSettings(); saveVersion()">
+		Save Version
+		<span class="right"><span class="add" ng-bind-html="actionSymbol"></span>S</span>
+	</span>
+	<span class="item" ng-click="goto('/document/' + documentId + '/versions')">
+		Versions
+	</span>
+	<hr />
+	<span class="item" ng-click="preview = true; processPreview(); closeDocumentSettings()">
+		Preview
+		<span class="right">Shift + <span ng-bind-html="actionSymbol"></span> + L</span>
+	</span>
+	<hr />
+	<span class="item" ng-click="insertMarkdown('bold')">
+		Bold
+		<span class="right"><span class="add" ng-bind-html="actionSymbol"></span>B</span>
+	</span>
+	<span class="item" ng-click="insertMarkdown('italic')">
+		Italic
+		<span class="right"><span class="add" ng-bind-html="actionSymbol"></span>I</span>
+	</span>
+	<hr />
+	<span class="item" ng-click="insertMarkdown('url')">
+		Link
+		<span class="right"><span class="add" ng-bind-html="actionSymbol"></span>K</span>
+	</span>
+	<span class="item" ng-click="insertMarkdown('image')">
+		Image
+		<span class="right">Shift + <span ng-bind-html="actionSymbol"></span> + I</span>
+	</span>
+	<span class="item" ng-click="insertMarkdown('quote')">
+		Quote
+	</span>
+	<hr />
+	<span class="item" ng-click="openWindow(1); closeDocumentSettings()">
+		Sharing Settings...
+	</span>
+	<span class="item" ng-click="openWindow(0); closeDocumentSettings()">
+		Document Settings...
+	</span>
+</div>
+
+<div class="container document" ng-class="(preview === true) ? 'hidden' : ''">
+	<div class="loading" ng-show="documentLoading">Loading...</div>
+	<textarea ui-codemirror="editorOptions" control="codemirrorControl" functions="codemirrorFunctions"></textarea>
+</div>
+<div class="container document preview" ng-bind-html="previewHtml" ng-show="preview"></div>
+<div class="backgroundAbsolute" ng-hide="preview">
+	<div class="setFocus" ng-click="editorFocus()"></div>
+</div>
+
+<div class="notification" ng-class="(notificationVisible) ? 'visible' : ''">
+	<span>{{ notificationMessage }}</span>
+</div>
+
+<div class="information fixed">
+	<span class="number">{{ documentWordCount }} words<span ng-hide="documentLoading">  &bull; version {{ documentVersions }} &bull; <span class="tooltip" title="Document is saved automatically" >{{ documentSaved | ifTrue : 'saved' : 'saving...' }}</span></span></span>
+</div>
+
+<div class="window" ng-show="windows[0]">
+	<div class="inner">
+		<div class="container">
+			<span class="title">Document Settings</span>
+			<label>
+				Name
+				<input type="text" ng-model="document.name" />
+			</label>
+
+			<div style="margin-bottom: 16px"><div class="button" ng-class="(windowsSaving[0] === true) ? 'loading' : ''" ng-click="windowsSaving[0] = true; saveDocumentSettings()">{{ (windowsSaving[0] === true) ? 'Saving...' : 'Save' }}</div> <span class="options">or <a ng-click="closeWindow(0)" href="javascript:void(0)">cancel</a></span></div>
+
+			<hr ng-show="integration.dropbox.status === 1" />
+			<span class="element" ng-show="integration.dropbox.status === 1">Dropbox Sync</span>
+			<div class="integration dropbox" ng-show="integration.dropbox.status === 1">
+				<img class="spinner" ng-show="integration.dropbox.loading" src="images/icon-loading.svg" alt="Loading..." />
+				<ul ng-hide="integration.dropbox.loading">
+					<li ng-hide="integration.dropbox.folder === '/' || integration.dropbox.folder === ''" style="padding: 2px 4px" ng-click="dropboxBrowse()"><img src="images/icon-back.svg" alt="Back" /> Back</li>
+					<li ng-repeat="item in integration.dropbox.listing" ng-click="dropboxBrowse(item)" ng-class="(integration.dropbox.file === item.path ? 'selected' : '')"><img ng-show="item.is_dir" src="images/icon-folder.svg" alt="Folder" /><img ng-hide="item.is_dir" src="images/icon-file.svg" alt="File" /> {{item.path | filename}}</li>
+				</ul>
+			</div>
+			<p ng-show="integration.dropbox.status === 1" style="margin-bottom: 0">Select a text or markdown file in your Dropbox to sync it with Typewrite.</p>
+
+		</div>
+	</div>
+</div>
+
+<div class="window" ng-show="windows[1]">
+	<div class="inner">
+		<div class="container">
+			<span class="title">Sharing Settings</span>
+			<div class="users">
+				<div class="user" ng-repeat="user in sharingSettings.users">
+					<span class="name">{{ user.name }}</span> &mdash; <span class="email">{{ user.email }}</span>
+					<span ng-show="user.id" class="remove" ng-click="removeAccess(user)">Remove</span>
+				</div>
+			</div>
+			<hr />
+			<label>
+				Email
+				<input type="text" ng-model="sharingSettings.email" />
+			</label>
+			<div class="button" ng-class="(windowsSaving[1] === true) ? 'loading' : ''" ng-click="windowsSaving[1] = true; saveSharingSettings()">{{ (windowsSaving[1] === true) ? 'Sharing...' : 'Share' }}</div> <span class="options">or <a ng-click="closeWindow(1)" href="javascript:void(0)">close</a></span>
+		</div>
+	</div>
+</div>
+
+<div class="window" ng-show="windows[2]">
+	<div class="inner">
+		<div class="container" style="max-width: 800px">
+			<span class="title">{{ mergeDifferencesTitle }}</span>
+			<p>{{ mergeDifferencesMessage }}</p>
+			<p>Text highlighted in red will be deleted.  Text highlighted in green will be inserted.</p>
+			<div class="differences">
+				<span ng-repeat="diff in mergeDifferences" ng-switch="diff.action"><ins ng-class="(diff.perform === true) ? '' : 'disabled'" ng-switch-when="1" ng-click="diff.perform = !diff.perform">{{ diff.content }}<span class="confirm">{{ (diff.perform === true) ? 'Insert this' : 'Don\'t insert this'  }}</span></ins><del ng-class="(diff.perform === true) ? '' : 'disabled'" ng-switch-when="-1" ng-click="diff.perform = !diff.perform">{{ diff.content }}<span class="confirm">{{ (diff.perform === true) ? 'Delete this' : 'Don\'t delete this' }}</span></del><span ng-switch-when="0">{{ diff.content }}</span></span>
+			</div>
+			<div class="button" ng-class="(windowsSaving[2] === true) ? 'loading' : ''" ng-click="windowsSaving[2] = true; saveMergeDifferences()">{{ (windowsSaving[2] === true) ? 'Saving...' : 'Save Document &amp; Save New Version' }}</div> <span class="options">or <a ng-click="closeWindow(1)" href="javascript:void(0)">keep current document and save other version</a></span>
+		</div>
+	</div>
+</div>
+
+<errorbox control="errorControl"></errorbox>

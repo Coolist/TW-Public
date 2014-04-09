@@ -1,0 +1,54 @@
+<div class="container logo">
+
+	<img class="logo-mini" src="images/logo-icon.svg" alt="Typewrite" ng-click="goto('/documents')" />
+
+	<div class="logo-menu">
+		<span class="item" ng-click="goto('/documents')">
+			Documents
+		</span>
+		<span class="item" ng-click="goto('/account/logout')">
+			Logout
+		</span>
+	</div>
+
+</div>
+
+<div class="container account-settings">
+	<div class="column-left">
+		<form novalidate name="settingsForm" class="settingsForm" ng-submit="changeSettings()">
+			<label>
+				Full Name
+				<input type="text" name="name" ng-model="name" required />
+				<div class="error" ng-show="settingsForm.name.$invalid && submitted">
+					<span ng-show="settingsForm.name.$error.required">Name is required</span>
+				</div>
+			</label>
+			<label>
+				Email
+				<input type="email" name="email" ng-model="email" spellcheck="false" required />
+				<div class="error" ng-show="settingsForm.email.$invalid && submitted">
+					<span ng-show="settingsForm.email.$error.required">Email is required</span>
+					<span ng-show="settingsForm.email.$error.email">Email is invalid</span>
+				</div>
+			</label>
+			<label>
+				Password <span class="note">(Leave this empty if you do not want to change it)</span>
+				<input type="password" name="password" ng-model="password" ng-minlength="6" />
+				<div class="error" ng-show="settingsForm.password.$invalid && submitted">
+					<span ng-show="settingsForm.password.$error.minlength">Password should be at least 6 characters</span>
+				</div>
+			</label>
+			<input type="submit" ng-class="(loading === true) ? 'loading' : ''" value="{{ (loading === true) ? 'Saving...' : 'Save' }}" /> <span class="options">or <a ng-click="goto('/documents')" href="javascript:void(0)">go back to documents</a></span>
+		</form>
+	</div>
+	<div class="column-right">
+		<!--<h2>Dropbox Sync</h2>
+		<p>Typewrite will sync with Dropbox to let you edit your documents with your favourite text editor on your computer or mobile device.</p>
+		<div class="button" ng-show="dropbox.step === 0">Checking Dropbox Status...</div>
+		<a class="button" ng-show="dropbox.step === 1" ng-click="openPopup('http://localhost:3000/1/dropbox'); dropbox.step = 2" href="javascript:void(0)">Connect to Dropbox</a>
+		<a class="button" ng-show="dropbox.step === 2" ng-click="changeIntegrationStatus('dropbox', 2)" href="javascript:void(0)">Click here after allowing access</a>
+		<div class="button success" ng-show="dropbox.step === 3">Connected to Dropbox</div>-->
+	</div>
+</div>
+
+<errorbox control="errorControl"></errorbox>

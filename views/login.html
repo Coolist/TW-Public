@@ -1,0 +1,26 @@
+<div class="container account">
+	<div class="logo">
+		<img src="images/logo-account.svg" alt="Typewrite" />
+	</div>
+	<form novalidate name="loginForm" class="loginForm" ng-submit="login()">
+		<label>
+			Email
+			<input type="email" name ="email" ng-model="email" placeholder="jamesjones@example.com" spellcheck="false" required />
+			<div class="error" ng-show="loginForm.email.$invalid && submitted">
+				<span ng-show="loginForm.email.$error.required">Email is required</span>
+				<span ng-show="loginForm.email.$error.email">Email is invalid</span>
+			</div>
+		</label>
+		<label>
+			Password
+			<input type="password" name="password" ng-model="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" ng-minlength="6" required />
+			<div class="error" ng-show="loginForm.password.$invalid && submitted">
+				<span ng-show="loginForm.password.$error.required">Password is required</span>
+				<span ng-show="loginForm.password.$error.minlength">Password should be at least 6 characters</span>
+			</div>
+		</label>
+		<input type="submit" ng-class="(loading === true) ? 'loading' : ''" value="{{ (loading === true) ? 'Logging in...' : 'Login' }}" /> <span class="options">or <a href="account/register">sign up for a new account</a></span>
+	</form>
+</div>
+
+<errorbox control="errorControl"></errorbox>

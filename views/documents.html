@@ -1,0 +1,74 @@
+<div class="container logo auto-fixed">
+
+	<img class="logo-mini" src="images/logo-icon.svg" alt="Typewrite" />
+
+	<div class="logo-menu">
+		<span class="item" ng-click="goto('/account/settings')">
+			Account
+		</span>
+		<span class="item" ng-click="goto('/account/logout')">
+			Logout
+		</span>
+	</div>
+
+</div>
+
+<img ng-show="loading" class="spinner fade-in" ng-show="integration.dropbox.loading" src="images/icon-loading.svg" alt="Loading..." />
+
+<div class="add-document" ng-show="newDocumentInput">
+	<input type="text" ng-model="documentName" placeholder="Type document name and press enter" focus-input="newDocumentInput" ui-keydown="{'enter':'newDocument($event)','esc':'newDocumentClear($event)'}" />
+</div>
+<a class="add-document" ng-hide="newDocumentInput" ng-click="newDocumentInput=true">+</a>
+
+<div class="container documents">
+	<div class="document" ng-repeat="document in documents | orderBy:'updated_at':-1" ng-class="(settingsInput === $index) ? 'settings-active' : ''" ng-style="{'background-color': '#' + document.color}">
+		<div class="top" ng-click="openDocument(document)">
+			<span class="title">{{ document.name }}</span>
+			<span class="preview">{{ document.content_sample }}</span>
+		</div>
+		<div class="bottom" ng-style="{color: '#' + document.color}" ng-click="toggleSettings($index)">
+			<span ng-hide="settingsInput==$index">{{ document.updated_at | date:'MMM. d, yyyy'}}</span>
+			<span ng-show="settingsInput==$index">Settings</span>
+
+			<svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="15px" height="15px" viewBox="0 0 15 15" enable-background="new 0 0 15 15" xml:space="preserve">
+				<rect ng-style="{fill: '#' + document.color}" width="15" height="3" class="style0"/>
+				<rect ng-style="{fill: '#' + document.color}" y="12" width="15" height="3" class="style0"/>
+				<rect ng-style="{fill: '#' + document.color}" y="6" width="15" height="3" class="style0"/>
+			</svg>
+		</div>
+		<div class="settings">
+			<div class="colors">
+				<div class="color" ng-click="changeDocumentColor(1, document)" style="background-color: #E8C018; border-color: #7C661B">
+					<img ng-show="document.color=='E8C018'" alt="Selected" src="images/check.svg" />
+				</div>
+				<div class="color" ng-click="changeDocumentColor(2, document)" style="background-color: #E2491A; border-color: #76321A">
+					<img ng-show="document.color=='E2491A'" alt="Selected" src="images/check.svg" />
+				</div>
+				<div class="color" ng-click="changeDocumentColor(3, document)" style="background-color: #71CC29; border-color: #486719">
+					<img ng-show="document.color=='71CC29'" alt="Selected" src="images/check.svg" />
+				</div>
+				<div class="color" ng-click="changeDocumentColor(4, document)" style="background-color: #999999; border-color: #555555">
+					<img ng-show="document.color=='999999'" alt="Selected" src="images/check.svg" />
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="button" ng-click="openDocument(document, {settings: true})">Document Settings</div>
+			<div ng-mousedown="clickTimerSet(document)" ng-mouseleave="clickTimerUnset(document)" ng-mouseup="clickTimerUnset(document)" class="delete">
+				<div class="text"><span>{{ clickTimerIsSet[document.id] | ifTrue : 'Hold to Delete' : 'Delete' }}</span></div>
+				<div ng-class="(clickTimerIsSet[document.id] === true) ? 'active' : ''" class="progress"></div>
+			</div>
+		</div>
+	</div>
+	<div class="none" ng-show="(documents.length === 0) && (loading === false)">
+		<img src="images/blank-documents.png" alt="No Documents" />
+		<span class="title">You Have No Documents</span>
+		<span class="description">Create one now!  Just click the <strong>+</strong> button in the top right of this page.</span>
+	</div>
+	<div class="clear"></div>
+</div>
+
+<div class="information">
+	<span class="number">You have {{ documents.length }} document<span ng-hide="documents.length==1">s</span> in <span class="workspace">{{ workspaceName(workspace) }}</span></span>
+</div>
+
+<errorbox control="errorControl"></errorbox>

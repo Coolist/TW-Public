@@ -1,0 +1,41 @@
+<div class="container logo auto-fixed">
+
+	<img class="logo-mini" src="images/logo-icon.svg" alt="Typewrite" ng-click="goto('/document/' + documentId)" />
+
+	<div class="logo-menu">
+		<span class="item" ng-click="goto('/document/' + documentId)">
+			Document
+		</span>
+		<span class="item" ng-click="goto('/account/settings')">
+			Account
+		</span>
+		<span class="item" ng-click="goto('/account/logout')">
+			Logout
+		</span>
+	</div>
+
+</div>
+
+<div class="container versions">
+	<div ng-hide="(totalVersions < 1)" class="content" ng-bind-html="documentView"></div>
+	<div ng-hide="(totalVersions < 1) || (loading === true)" class="sidebar">
+		<div class="inner">
+			<h3>Version {{ compareFirst }} {{ test }}</h3>
+			<span class="info">Showing changes from <!--<span class="options">-->previous version<!--</span>--></span>
+		</div>
+	</div>
+	<div class="none" ng-show="(totalVersions === 0) && (loading === false)">
+		<img src="images/blank-versions.png" alt="No Versions" />
+		<span class="title">You Have No Versions</span>
+		<span class="description">Save at least one version of your document to see it here.</span>
+	</div>
+	<div class="clear"></div>
+</div>
+
+<div class="information fixed" ng-class="((totalVersions <= 1) || (loading === true)) ? 'hidden' : ''">
+	<div class="version-picker">
+		<dragbar version-number="{{ totalVersions }}" version-update="setViewVersion(version)"></dragbar>
+	</div>
+</div>
+
+<errorbox control="errorControl"></errorbox>
